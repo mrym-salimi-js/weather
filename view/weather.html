@@ -1,0 +1,200 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هواشناسی</title>
+    <link rel="website icon" href="/assets/img/weather-logo.png">
+    <link href="./css/app.css" rel="stylesheet">
+    <script src="/assets/js/axios.min.js" defer></script>
+    <script src="view.js" type="module" defer></script>
+</head>
+<style>
+    #day-0-{
+        background-color: #fadbd9;
+    }
+    #day-1-{
+        background-color: #fad9f5f0;
+    }
+    #day-2-{
+        background-color: #defad9f0;
+    }
+    #day-3-{
+        background-color: #f6fad9;
+    }
+    #day-4-{
+        background-color: #d9f7faf0;
+    }
+    #day-5-{
+        background-color: #ded9faf0;
+    }
+    #day-6-{
+        background-color: #faeed9;
+    }
+</style>
+<body class="bg-[ghostwhite]">
+    <div class="max-w-3xl flex flex-col gap-5 p-4  mx-auto " id="container">
+        <!-- Search othe location -->
+        <div class="h-10 flex flex-row-reverse gap-4 items-center px-5 0 my-3 relative">
+            <svg id="add-location" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                class="w-8 h-8 fill-[#99a0da] ">
+                <path fill-rule="evenodd"
+                    d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
+                    clip-rule="evenodd" />
+            </svg>
+            <input id="input-location" placeholder="جستجو مکانی دیگر"
+                class="hidden w-full h-full px-2 outline-1 outline-[#e7dbf4] self-center rounded-md text-ms text-right text-gray-600 font-sans bg-transparent z-30"
+                type="text">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 stroke-[#99a0da] absolute left-8 z-30 hidden" id="search-icon">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+
+        </div>
+        <!-- Location name -->
+        <div class="px-4">
+            <div class="flex flex-row-reverse gap-2 rounded-2xl bg-white shadow-md p-4">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="w-6 h-6 fill-blue-900">
+                    <path fill-rule="evenodd"
+                        d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
+                        clip-rule="evenodd" />
+                </svg>
+
+                <p class="font-sans text-lg text-blue-950" id="location">موقعیت مکانی</p>
+            </div>
+        </div>
+        <!--  weather temp max min  desc time -->
+        <div class="px-4 flex gap-2">
+            <div class="w-1/2 flex flex-col gap-3 p-5 rounded-2xl bg-white shadow-md justify-between">
+                <div class="flex justify-between gap-3">
+                    <p class="font-serif text-2xl text-blue-950 self-center" id="temp">°C</p>
+                    <img id="temp-icon" class="w-12 h-12 self-center">
+                </div>
+                <div class="flex  gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-6 h-6 fill-blue-900">
+                        <path fill-rule="evenodd"
+                            d="M15.22 6.268a.75.75 0 01.968-.432l5.942 2.28a.75.75 0 01.431.97l-2.28 5.941a.75.75 0 11-1.4-.537l1.63-4.251-1.086.483a11.2 11.2 0 00-5.45 5.174.75.75 0 01-1.199.19L9 12.31l-6.22 6.22a.75.75 0 11-1.06-1.06l6.75-6.75a.75.75 0 011.06 0l3.606 3.605a12.694 12.694 0 015.68-4.973l1.086-.484-4.251-1.631a.75.75 0 01-.432-.97z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p class="font-serif text-lgl text-gray-400 text-right" id="max-temp">°C</p>
+
+                </div>
+                <div class="flex  gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-6 h-6 fill-blue-900">
+                        <path fill-rule="evenodd"
+                            d="M1.72 5.47a.75.75 0 011.06 0L9 11.69l3.756-3.756a.75.75 0 01.985-.066 12.698 12.698 0 014.575 6.832l.308 1.149 2.277-3.943a.75.75 0 111.299.75l-3.182 5.51a.75.75 0 01-1.025.275l-5.511-3.181a.75.75 0 01.75-1.3l3.943 2.277-.308-1.149a11.194 11.194 0 00-3.528-5.617l-3.809 3.81a.75.75 0 01-1.06 0L1.72 6.53a.75.75 0 010-1.061z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p class="font-serif text-lgl text-gray-400 text-right" id="min-temp">°C</p>
+
+                </div>
+            </div>
+            <div class="w-1/2 flex flex-col gap-2">
+                <div class="w-full p-5 rounded-2xl bg-white shadow-md self-start">
+                    <p class="font-sans text-lg text-right text-blue-950" id="weather-desc">وضعیت آب و هوا</p>
+                </div>
+                <div class="w-full flex flex-col  gap-2 p-5 rounded-2xl bg-white shadow-md self-start">
+                    <div class="flex flex-row-reverse items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 fill-blue-900">
+                            <path fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p class="font-serif text-xl text-blue-950 text-right" id="clock">00:00</p>
+                    </div>
+                    <div class="flex flex-row-reverse items-center gap-2 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 fill-blue-900">
+                            <path fill-rule="evenodd"
+                                d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p class="font-sans text-lg text-blue-950" id="day">--</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Weather humidity wind pressure-->
+        <div class="px-4">
+            <div class="p-4 pt-9 flex justify-around gap-2 rounded-2xl bg-white shadow-md overflow-hidden">
+                <div class="flex flex-col gap-2 justify-around items-center">
+                    <img src="/assets/img/humidity.png">
+                    <p class="font-sans text-md text-gray-400 ">رطوبت</p>
+                    <p class="font-serif text-lg text-center text-blue-950" id="humidity">0 %</p>
+
+                </div>
+                <div class="flex flex-col gap-2 justify-around items-center">
+                    <img src="/assets/img/wind.png">
+                    <p class="font-sans text-md text-gray-400">باد</p>
+                    <p class="font-serif text-lg text-center text-blue-950" id="wind">0 m/s</p>
+
+                </div>
+                <div class="flex flex-col gap-2 justify-around items-center">
+                    <img src="/assets/img/pressure.png">
+                    <p class="font-sans text-md text-gray-400">فشار</p>
+                    <p class="font-serif text-lg text-center text-blue-950" id="pressure">0 hPa</p>
+                </div>
+            </div>
+        </div>
+        <!-- Sunset and Sunrise -->
+        <div class="px-4">
+            <div class="pt-4 px-4   rounded-2xl bg-white shadow-md ">
+                <div class="h-[160px] flex justify-evenly overflow-hidden">
+                    <div class="flex flex-col gap-2 justify-around items-center">
+                        <p class="font-sans text-lg text-center text-gray-400">طلوع</p>
+                        <p class="font-serif text-lg text-blue-950" id="sunrise">00:00</p>
+                        <span class="block w-24 h-24 bg-yellow-300 rounded-full relative top-9 opacity-50"></span>
+
+                    </div>
+                    <div class="w-4 h-28 border-l-2 border-gray-100 self-center"></div>
+                    <div class="flex flex-col gap-2 justify-around items-center">
+                        <p class="font-sans text-lg text-center text-gray-400">غروب</p>
+                        <p class="font-serif text-lg text-blue-950" id="sunset">00:00</p>
+                        <span class="block w-24 h-24 bg-orange-500 rounded-full relative top-9 opacity-50"></span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Forecaste evry 3 hours -->
+        <div class="px-4 forecast-elm-parent">
+
+
+        </div>
+    </div>
+    <!-- Forecast li temlate -->
+    <template id="template-li">
+        <li class="w-auto inline-block gap-3 justify-around items-center px-3 ">
+            <p class="font-serif text-base text-blue-950 " id="forecast-time">17:00</p>
+            <img class="w-[80%]" src="" id="forecast-img">
+            <p class="font-serif text-base text-center text-gray-400 " id="forecast-temp">10°C</p>
+        </li>
+    </template>
+    <!-- Forecast li parens temlate -->
+    <template id="template-li-parent">
+        <div class="flex justify-between gap-2 items-center li-parent mb-2">
+            <div class="p-3 w-1/4 h-full rounded-2xl bg-white shadow-md week-box">
+                <p class="flex items-center justify-around font-sans h-[76px] text-xl text-center text-white"
+                    id="week-day">
+                    امروز
+                </p>
+            </div>
+            <div class="px-3 py-2 w-3/4 h-[100px] rounded-2xl bg-white shadow-md overflow-x-scroll">
+                <div class="px-2 w-[635px] h-full overflow-hidden">
+                    <ul class="px-1 forecast-ul">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </template>
+</body>
+
+</html>
